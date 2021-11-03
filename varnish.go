@@ -158,6 +158,14 @@ func ScrapeVarnishFrom(buf []byte, ch chan<- prometheus.Metric) ([]byte, error) 
 
 		pName, pDescription, pLabelKeys, pLabelValues := computePrometheusInfo(vName, vGroup, vIdentifier, vDescription)
 
+		// allow disabling responding with backend metrics, this is too much data when the number of backends
+		// is above several hundred
+		if StartParams.WithoutBackendMetrics {
+			if startsWith(pName, "varnish_backend", caseSensitive) && pName != "varnish_backend_happy" && pName != "varnish_backend_conn" {
+				continue
+			}
+		}
+
 		descKey := pName + "_" + strings.Join(pLabelKeys, "_")
 		pDesc := DescCache.Desc(descKey)
 		if pDesc == nil {

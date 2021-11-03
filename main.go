@@ -41,11 +41,12 @@ type startParams struct {
 	VarnishDockerContainer string
 	Params                 *varnishstatParams
 
-	Verbose       bool
-	ExitOnErrors  bool
-	Test          bool
-	Raw           bool
-	WithGoMetrics bool
+	Verbose               bool
+	ExitOnErrors          bool
+	Test                  bool
+	Raw                   bool
+	WithGoMetrics         bool
+	WithoutBackendMetrics bool
 
 	noExit bool // deprecated
 }
@@ -93,6 +94,7 @@ func main() {
 	flag.BoolVar(&StartParams.Test, "test", StartParams.Test, "Test varnishstat availability, prints available metrics and exits.")
 	flag.BoolVar(&StartParams.Raw, "raw", StartParams.Test, "Raw stdout logging without timestamps.")
 	flag.BoolVar(&StartParams.WithGoMetrics, "with-go-metrics", StartParams.WithGoMetrics, "Export go runtime and http handler metrics")
+	flag.BoolVar(&StartParams.WithoutBackendMetrics, "without-backend-metrics", StartParams.WithoutBackendMetrics, "Disable including backend metrics in responses")
 
 	// deprecated
 	flag.BoolVar(&StartParams.noExit, "no-exit", StartParams.noExit, "Deprecated: see -exit-on-errors")
@@ -174,6 +176,9 @@ func main() {
 
 	// Start serving
 	logInfo("Server starting on %s with metrics path %s", StartParams.ListenAddress, StartParams.Path)
+	if StartParams.WithoutBackendMetrics {
+		logInfo("Server started with --without-backend-metrics")
+	}
 
 	if !StartParams.WithGoMetrics {
 		registry := prometheus.NewRegistry()

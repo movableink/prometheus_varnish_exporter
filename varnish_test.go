@@ -278,6 +278,7 @@ func (tc *testCollector) Collect(ch chan<- prometheus.Metric) {
 }
 
 func Test_PrometheusExport(t *testing.T) {
+	StartParams.WithoutBackendMetrics = true
 	dir, _ := os.Getwd()
 	if !fileExists(filepath.Join(dir, "test/scrape")) {
 		t.Skipf("Cannot find test/scrape files from workind dir %s", dir)
