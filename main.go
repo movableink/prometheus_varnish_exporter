@@ -59,7 +59,7 @@ type varnishstatParams struct {
 }
 
 func (p *varnishstatParams) isEmpty() bool {
-	return p.Instance == "" && p.VSM == ""
+	return p.Instance == "" && p.VSM == "" && p.Filter == ""
 }
 
 func (p *varnishstatParams) make() (params []string) {
