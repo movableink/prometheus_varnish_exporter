@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -54,6 +55,7 @@ type startParams struct {
 type varnishstatParams struct {
 	Instance string
 	VSM      string
+	Filter   string
 }
 
 func (p *varnishstatParams) isEmpty() bool {
@@ -69,6 +71,14 @@ func (p *varnishstatParams) make() (params []string) {
 	if p.VSM != "" && VarnishVersion.EqualsOrGreater(4, 0) {
 		params = append(params, "-N", p.VSM)
 	}
+
+	// -f
+	if p.Filter != "" {
+		filterArgs := strings.Split(p.Filter, ",")
+		preparedArgs := strings.Join(filterArgs, " -f ")
+		params = append(params, "-f", preparedArgs)
+	}
+
 	return params
 }
 
@@ -82,6 +92,7 @@ func main() {
 	flag.StringVar(&StartParams.VarnishstatExe, "varnishstat-path", StartParams.VarnishstatExe, "Path to varnishstat.")
 	flag.StringVar(&StartParams.Params.Instance, "n", StartParams.Params.Instance, "varnishstat -n value.")
 	flag.StringVar(&StartParams.Params.VSM, "N", StartParams.Params.VSM, "varnishstat -N value.")
+	flag.StringVar(&StartParams.Params.Filter, "f", StartParams.Params.Filter, "Comma separated list of varnishstat -f arguments, expands out to multiple -f arguments to varnishstat")
 
 	// docker
 	flag.StringVar(&StartParams.VarnishDockerContainer, "docker-container-name", StartParams.VarnishDockerContainer, "Docker container name to exec varnishstat in.")
