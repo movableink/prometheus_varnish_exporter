@@ -59,7 +59,7 @@ type varnishstatParams struct {
 }
 
 func (p *varnishstatParams) isEmpty() bool {
-	return p.Instance == "" && p.VSM == ""
+	return p.Instance == "" && p.VSM == "" && p.Filter == ""
 }
 
 func (p *varnishstatParams) make() (params []string) {
@@ -75,8 +75,9 @@ func (p *varnishstatParams) make() (params []string) {
 	// -f
 	if p.Filter != "" {
 		filterArgs := strings.Split(p.Filter, ",")
-		preparedArgs := strings.Join(filterArgs, " -f ")
-		params = append(params, "-f", preparedArgs)
+		for _, arg := range filterArgs {
+			params = append(params, "-f", arg)
+		}
 	}
 
 	return params
