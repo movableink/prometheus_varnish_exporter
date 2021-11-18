@@ -32,7 +32,7 @@ func Test_varnishstatParams_make(t *testing.T) {
 				VSM: "",
 				Filter: `^VBE.*\.bereq_hdrbytes,^VBE.*\.bereq_bodybytes,^VBE.*\.beresp_hdrbytes,^VBE.*\.beresp_bodybytes`,
 			},
-			wantParams: []string{"-f", `^VBE.*\.bereq_hdrbytes -f ^VBE.*\.bereq_bodybytes -f ^VBE.*\.beresp_hdrbytes -f ^VBE.*\.beresp_bodybytes`},
+			wantParams: []string{`-f`, `^VBE.*\.bereq_hdrbytes`, `-f`, `^VBE.*\.bereq_bodybytes`, `-f`, `^VBE.*\.beresp_hdrbytes`, `-f`, `^VBE.*\.beresp_bodybytes`},
 		},
 	}
 	for _, tt := range tests {
